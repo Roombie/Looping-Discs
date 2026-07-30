@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.roombie.loopingdiscs.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "JukeboxSongMixin"
+  ],
+  "client": [
+    "client.AbstractSoundInstanceAccessor",
+    "client.ClientLevelMixin",
+    "client.LevelEventHandlerAccessor",
+    "client.SimpleSoundInstanceMixin"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
+
