@@ -1,32 +1,75 @@
-# MultiLoader Template
+# Looping Discs
 
-This project provides a Gradle project template that can compile Minecraft mods for multiple modloaders using a common project for the sources. This project does not require any third party libraries or dependencies. If you have any questions or want to discuss the project, please join our [Discord](https://discord.myceliummod.network).
+A lightweight Minecraft mod that continuously loops music discs while they remain inside a jukebox. Playback stops normally when the disc is removed or the jukebox is destroyed.
 
-## Getting Started
+Looping Discs is built as a multiloader project for **Fabric** and **NeoForge**.
 
-### IntelliJ IDEA
-This guide will show how to import the MultiLoader Template into IntelliJ IDEA. The setup process is roughly equivalent to setting up the modloaders independently and should be very familiar to anyone who has worked with their MDKs.
+## Features
 
-1. Clone or download this repository to your computer.
-2. Configure the project by setting the properties in the `gradle.properties` file. You will also need to change the `rootProject.name`  property in `settings.gradle`, this should match the folder name of your project, or else IDEA may complain.
-3. Open the template's root folder as a new project in IDEA. This is the folder that contains this README.md file and the gradlew executable.
-4. If your default JVM/JDK is not Java 25 you will encounter an error when opening the project. This error is fixed by going to `File > Settings > Build, Execution, Deployment > Build Tools > Gradle > Gradle JVM` and changing the value to a valid Java 25 JVM. You will also need to set the Project SDK to Java 25. This can be done by going to `File > Project Structure > Project SDK`. Once both have been set open the Gradle tab in IDEA and click the refresh button to reload the project.
-5. Open your Run/Debug Configurations. Under the `Application` category there should now be options to run Fabric and NeoForge projects. Select one of the client options and try to run it.
-6. Assuming you were able to run the game in step 5 your workspace should now be set up.
+- Automatically restarts music discs when they finish.
+- Keeps the disc playing for as long as it remains inside the jukebox.
+- Stops playback when the disc is removed.
+- Stops playback when the jukebox is destroyed, including near the end of a song.
+- Works through Minecraft's standard jukebox-song system.
+- Does not require Fabric API.
 
-### Eclipse
-While it is possible to use this template in Eclipse it is not recommended. During the development of this template multiple critical bugs and quirks related to Eclipse were found at nearly every level of the required build tools. While we continue to work with these tools to report and resolve issues support for projects like these are not there yet. For now Eclipse is considered unsupported by this project. The development cycle for build tools is notoriously slow so there are no ETAs available.
+## Supported versions
 
-## Development Guide
-When using this template the majority of your mod should be developed in the `common` project. The `common` project is compiled against the vanilla game and is used to hold code that is shared between the different loader-specific versions of your mod. The `common` project has no knowledge or access to ModLoader specific code, apis, or concepts. Code that requires something from a specific loader must be done through the project that is specific to that loader, such as the `fabric` or `neoforge` projects.
+| Component | Version |
+| --- | --- |
+| Minecraft | 26.2 |
+| Fabric | Supported |
+| NeoForge | Supported |
+| Java | 25 or newer |
 
-Loader specific projects such as the `fabric` and `neoforge` project are used to load the `common` project into the game. These projects also define code that is specific to that loader. Loader specific projects can access all the code in the `common` project. It is important to remember that the `common` project can not access code from loader specific projects.
+Fabric and NeoForge use separate JAR files. Install the file made for your selected mod loader.
 
-## Removing Platforms and Loaders
-While this template has support for many modloaders, new loaders may appear in the future, and existing loaders may become less relevant.
+## Installation
 
-Removing loader specific projects is as easy as deleting the folder, and removing the `include("projectname")` line from the `settings.gradle` file.
-For example if you wanted to remove support for `forge` you would follow the following steps:
+1. Install Fabric Loader or NeoForge for the supported Minecraft version.
+2. Download the corresponding Looping Discs JAR.
+3. Place the JAR in the Minecraft `mods` folder.
+4. Launch the game and insert a music disc into a jukebox.
 
-1. Delete the subproject folder. For example, delete `MultiLoader-Template/forge`.
-2. Remove the project from `settings.gradle`. For example, remove `include("forge")`. 
+For multiplayer, install the mod on both the server and participating clients. The server maintains the jukebox playback state, while each client handles the looping audio.
+
+## Building from source
+
+Clone the repository and run the following command from the project root.
+
+### Windows PowerShell
+
+```powershell
+.\gradlew.bat clean build
+```
+
+### Linux and macOS
+
+```bash
+./gradlew clean build
+```
+
+Generated JAR files can be found in:
+
+```text
+fabric/build/libs/
+neoforge/build/libs/
+```
+
+## Compatibility
+
+Looping Discs modifies the standard jukebox playback process using Mixins. Mods that completely replace Minecraft's jukebox or music-disc playback system may require additional compatibility work.
+
+## License and permissions
+
+Copyright © 2026 Roombie. **All Rights Reserved.**
+
+You may include an unmodified official build of Looping Discs in a modpack, provided that:
+
+- Proper credit is given to **Roombie**.
+- A link to the original Looping Discs project page or repository is included.
+- The mod is not presented as your own work.
+
+You may not reupload or redistribute Looping Discs as a standalone download, publish modified versions or ports, sell the mod, or reuse its source code or assets without prior written permission.
+
+See [LICENSE](LICENSE) for the complete terms. Third-party code and template components remain subject to their respective licenses.
