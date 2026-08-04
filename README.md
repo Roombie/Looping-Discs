@@ -1,17 +1,33 @@
 # Looping Discs
 
-A lightweight Minecraft mod that continuously loops music discs while they remain inside a jukebox. Playback stops normally when the disc is removed or the jukebox is destroyed.
+A lightweight Minecraft mod that loops music discs seamlessly while they remain inside a jukebox. Playback stops normally when the disc is removed or the jukebox is destroyed.
 
 Looping Discs is built as a multiloader project for **Fabric** and **NeoForge**.
 
 ## Features
 
-- Automatically restarts music discs when they finish.
+- Loops music discs seamlessly, with no gap between repeats.
 - Keeps the disc playing for as long as it remains inside the jukebox.
-- Stops playback when the disc is removed.
-- Stops playback when the jukebox is destroyed, including near the end of a song.
+- Stops playback when the disc is removed or the jukebox is destroyed.
+- Picks the music back up for players who arrive while a disc is already playing.
 - Works through Minecraft's standard jukebox-song system.
+- Does not add blocks, items, recipes, or configuration.
 - Does not require Fabric API.
+
+## Behaviour worth knowing
+
+**Discs restart from the beginning when you come back.** Minecraft only announces
+that a jukebox has started playing, never how far into the song it is, so a player
+who rejoins the world or walks far enough away for the chunk to unload will hear
+the disc start over rather than resume. The music returns within about five
+seconds of coming back into range. Without this mod that jukebox would simply stay
+silent until the disc was taken out and put back.
+
+**Players already listening are unaffected.** The music does not stutter, restart,
+or repeat the "now playing" message while you stand near the jukebox.
+
+**Hoppers still work.** Discs can be inserted and extracted as usual, so jukebox
+contraptions keep functioning.
 
 ## Supported versions
 

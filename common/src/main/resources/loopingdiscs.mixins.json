@@ -4,12 +4,13 @@
   "package": "com.roombie.loopingdiscs.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "JukeboxSongMixin"
+    "JukeboxSongMixin",
+    "JukeboxSongPlayerMixin"
   ],
   "client": [
-    "client.AbstractSoundInstanceAccessor",
-    "client.ClientLevelMixin",
+    "client.ClientLevelAccessor",
     "client.LevelEventHandlerAccessor",
+    "client.LevelEventHandlerMixin",
     "client.SimpleSoundInstanceMixin"
   ],
   "server": [],
@@ -20,4 +21,3 @@
     "requireAnnotations": true
   }
 }
-
