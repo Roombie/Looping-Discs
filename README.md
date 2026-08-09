@@ -1,33 +1,90 @@
 # Looping Discs
 
-A lightweight Minecraft mod that loops music discs seamlessly while they remain inside a jukebox. Playback stops normally when the disc is removed or the jukebox is destroyed.
+A lightweight Minecraft mod that automatically loops music discs while they remain inside a jukebox.
 
-Looping Discs is built as a multiloader project for **Fabric** and **NeoForge**.
+**Looping Discs** keeps the vanilla jukebox experience intact: no replacement blocks, no custom GUI, no special discs, and no new recipes. It simply makes jukebox music keep playing, while adding sensible behavior for multiplayer and redstone contraptions.
+
+Built for **Fabric** and **NeoForge**.
 
 ## Features
 
-- Loops music discs seamlessly, with no gap between repeats.
-- Keeps the disc playing for as long as it remains inside the jukebox.
-- Stops playback when the disc is removed or the jukebox is destroyed.
-- Picks the music back up for players who arrive while a disc is already playing.
-- Works through Minecraft's standard jukebox-song system.
-- Does not add blocks, items, recipes, or configuration.
-- Does not require Fabric API.
+- Automatically restarts music discs when they reach the end.
+- Keeps looping for as long as the disc remains inside the jukebox.
+- Stops normally when the disc is removed.
+- Stops correctly when the jukebox is destroyed, even near the end of a song.
+- Synchronizes active jukeboxes for players who arrive after the music has already started.
+- Uses Minecraft's standard jukebox-song system for broad compatibility.
+- Preserves vanilla-style redstone and automation behavior through an in-world looping opt-out.
+- Includes a global configuration option to disable looping without uninstalling the mod.
+- Supports both **Fabric** and **NeoForge** from a shared multiloader codebase.
+- Adds no blocks, items, recipes, or GUIs.
 
-## Behaviour worth knowing
+## Vanilla-friendly looping
 
-**Discs restart from the beginning when you come back.** Minecraft only announces
-that a jukebox has started playing, never how far into the song it is, so a player
-who rejoins the world or walks far enough away for the chunk to unload will hear
-the disc start over rather than resume. The music returns within about five
-seconds of coming back into range. Without this mod that jukebox would simply stay
-silent until the disc was taken out and put back.
+By default, a jukebox loops normally.
 
-**Players already listening are unaffected.** The music does not stutter, restart,
-or repeat the "now playing" message while you stand near the jukebox.
+If a jukebox is placed directly on top of a block in the following tag, looping is disabled for that jukebox and it behaves like vanilla:
 
-**Hoppers still work.** Discs can be inserted and extracted as usual, so jukebox
-contraptions keep functioning.
+```text
+#loopingdiscs:disables_looping
+```
+
+The default tag contains:
+
+```text
+minecraft:hopper
+minecraft:dropper
+minecraft:dispenser
+minecraft:observer
+```
+
+This helps preserve jukebox-based redstone timers and automation setups that depend on a disc eventually finishing.
+
+The tag is data-driven, so datapacks and server owners can extend or modify the list without changing the mod's code.
+
+## Multiplayer synchronization
+
+Vanilla only announces a jukebox playback event to players who are in range when the event occurs. For looping music, this can cause a player who arrives later to hear nothing until the next restart.
+
+Looping Discs accounts for this by synchronizing already-playing jukeboxes when their chunk is sent to a player.
+
+As a result, players entering the area can begin hearing an active looping jukebox without waiting for the current loop to finish.
+
+### A note about playback position
+
+When a player arrives after a disc has already started, their client begins that disc from the start rather than from the exact playback position heard by players who were already present.
+
+Players who are already listening are not restarted simply because another player enters the area.
+
+## Configuration
+
+Looping Discs creates:
+
+```text
+config/loopingdiscs.properties
+```
+
+The default configuration is:
+
+```properties
+enabled=true
+```
+
+Set:
+
+```properties
+enabled=false
+```
+
+to restore vanilla jukebox behavior everywhere without removing the mod.
+
+For individual jukeboxes, use a block from:
+
+```text
+#loopingdiscs:disables_looping
+```
+
+directly underneath the jukebox instead.
 
 ## Supported versions
 
@@ -38,20 +95,43 @@ contraptions keep functioning.
 | NeoForge | Supported |
 | Java | 25 or newer |
 
-Fabric and NeoForge use separate JAR files. Install the file made for your selected mod loader.
+Fabric and NeoForge use separate JAR files. Install the build made for your selected mod loader.
+
+## Dependencies
+
+### Fabric
+
+The Fabric version requires:
+
+- **Fabric Loader**
+- **Fabric API**
+
+### NeoForge
+
+The NeoForge version requires:
+
+- **NeoForge**
 
 ## Installation
 
-1. Install Fabric Loader or NeoForge for the supported Minecraft version.
-2. Download the corresponding Looping Discs JAR.
-3. Place the JAR in the Minecraft `mods` folder.
-4. Launch the game and insert a music disc into a jukebox.
+1. Install the appropriate mod loader for Minecraft 26.2.
+2. If you are using Fabric, install Fabric API as well.
+3. Download the corresponding **Looping Discs** JAR.
+4. Place the required JAR files in your Minecraft `mods` folder.
+5. Launch the game and insert a music disc into a jukebox.
 
-For multiplayer, install the mod on both the server and participating clients. The server maintains the jukebox playback state, while each client handles the looping audio.
+For multiplayer, installing Looping Discs on both the server and participating clients is recommended so the complete playback behavior remains consistent.
 
 ## Building from source
 
-Clone the repository and run the following command from the project root.
+Clone the repository:
+
+```bash
+git clone https://github.com/Roombie/Looping-Discs.git
+cd Looping-Discs
+```
+
+Then build the project from the repository root.
 
 ### Windows PowerShell
 
@@ -74,18 +154,29 @@ neoforge/build/libs/
 
 ## Compatibility
 
-Looping Discs modifies the standard jukebox playback process using Mixins. Mods that completely replace Minecraft's jukebox or music-disc playback system may require additional compatibility work.
+Looping Discs modifies Minecraft's standard jukebox playback process using Mixins while continuing to use vanilla jukebox song events.
+
+Mods that completely replace the jukebox or music-disc playback system may require additional compatibility work.
+
+The `#loopingdiscs:disables_looping` block tag is intended to make compatibility with redstone builds and modded automation easier to customize.
 
 ## License and permissions
 
 Copyright © 2026 Roombie. **All Rights Reserved.**
 
-You may include an unmodified official build of Looping Discs in a modpack, provided that:
+You may include an official, unmodified build of Looping Discs in a modpack provided that:
 
-- Proper credit is given to **Roombie**.
-- A link to the original Looping Discs project page or repository is included.
-- The mod is not presented as your own work.
+- **Roombie** is clearly credited as the author.
+- The modpack includes a link to the original Looping Discs project page or source repository.
+- The mod is not presented as the modpack creator's own work.
+- Access to the standalone mod is not sold or placed behind a separate fee.
 
-You may not reupload or redistribute Looping Discs as a standalone download, publish modified versions or ports, sell the mod, or reuse its source code or assets without prior written permission.
+Without prior written permission, you may not:
 
-See [LICENSE](LICENSE) for the complete terms. Third-party code and template components remain subject to their respective licenses.
+- Reupload or redistribute Looping Discs as a standalone download.
+- Publish modified versions, forks, ports, or derivative works.
+- Reuse or redistribute the source code, artwork, branding, or other project assets.
+- Sell, sublicense, rent, or otherwise commercially distribute the mod.
+- Remove or alter copyright, attribution, or license notices.
+
+See [LICENSE](LICENSE) for the complete terms.

@@ -1,8 +1,12 @@
 package com.roombie.loopingdiscs.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.roombie.loopingdiscs.config.LoopingDiscsConfig;
+import com.roombie.loopingdiscs.loop.JukeboxLoopSync;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.JukeboxSong;
 import net.minecraft.world.item.JukeboxSongPlayer;
 import net.minecraft.world.level.LevelAccessor;
@@ -11,30 +15,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Re-announces the song that is currently playing, so that players who were not nearby when it
- * started can still hear it.
+ * Loops the disc by restarting the song rather than by preventing it from ever ending.
  *
- * <p>Vanilla fires the "play jukebox song" level event exactly once, to whoever happens to be in
- * range at that moment. Normally that is harmless: the song ends by itself and the jukebox resets.
- * Because this mod stops the song from ever finishing, a player who joins, changes dimension, or
- * simply walks far enough for the chunk to unload would otherwise be left with a jukebox that is
- * permanently silent and cannot be restarted without taking the disc out by hand.
+ * <p>The distinction matters. Neutering {@code JukeboxSong.hasFinished} globally affects every
+ * caller in the game, present and future, and leaves {@code ticksSinceSongStarted} growing without
+ * bound and semantically meaningless to anything else that reads it. Wrapping the single call site
+ * inside {@code tick} confines the change to the one decision we care about: what happens at the
+ * moment the song would have ended.
  *
- * <p>Listeners already in range ignore the repeat: see {@code LevelEventHandlerMixin}.
+ * <p>Because the restart is expressed as a genuine vanilla play event, a client without this mod
+ * installed behaves correctly on its own. That is the whole point of doing it here rather than on
+ * the client: the mod degrades to "looping with an audible seam" instead of degrading to "broken".
  */
 @Mixin(JukeboxSongPlayer.class)
 public abstract class JukeboxSongPlayerMixin {
-
-    /** How often the currently playing song is re-announced. */
-    private static final long LOOPING_DISCS$REBROADCAST_INTERVAL_TICKS = 100L;
-
-    /** Vanilla's "a jukebox song started playing" level event. */
-    private static final int LOOPING_DISCS$PLAY_JUKEBOX_SONG_EVENT = 1010;
 
     @Shadow
     private long ticksSinceSongStarted;
@@ -46,24 +42,42 @@ public abstract class JukeboxSongPlayerMixin {
     @Final
     private BlockPos blockPos;
 
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void loopingDiscs$rebroadcastSong(
+    /**
+     * VERIFY: the descriptor below must match {@code JukeboxSong.hasFinished} in 26.2, and that
+     * method must actually be invoked from {@code JukeboxSongPlayer.tick}. If either has changed,
+     * this injector fails loudly at load time (defaultRequire is 1), which is the behaviour we
+     * want -- a silent no-op would be far worse.
+     */
+    @WrapOperation(
+            method = "tick",
+            at = @org.spongepowered.asm.mixin.injection.At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/JukeboxSong;hasFinished(J)Z"
+            )
+    )
+    private boolean loopingDiscs$restartInsteadOfFinishing(
+            JukeboxSong instance,
+            long ticks,
+            Operation<Boolean> original,
             LevelAccessor level,
-            BlockState blockState,
-            CallbackInfo ci
+            BlockState blockState
     ) {
-        if (this.song == null || level.isClientSide()) {
-            return;
+        if (!original.call(instance, ticks)) {
+            return false;
         }
 
-        if (this.ticksSinceSongStarted % LOOPING_DISCS$REBROADCAST_INTERVAL_TICKS != 0L) {
-            return;
+        if (this.song == null || !LoopingDiscsConfig.shouldLoop(level, this.blockPos)) {
+            return true;
         }
 
-        int songId = level.registryAccess()
-                .lookupOrThrow(Registries.JUKEBOX_SONG)
-                .getId(this.song.value());
+        // Both sides reset, so the client's own block entity keeps spawning note particles and
+        // stays in step with the server. Only the server announces the restart.
+        this.ticksSinceSongStarted = 0L;
 
-        level.levelEvent(null, LOOPING_DISCS$PLAY_JUKEBOX_SONG_EVENT, this.blockPos, songId);
+        if (!level.isClientSide()) {
+            JukeboxLoopSync.broadcastPlay(level, this.blockPos, this.song);
+        }
+
+        return false;
     }
 }

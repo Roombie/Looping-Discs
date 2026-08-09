@@ -52,7 +52,7 @@ processResources {
             'neoforge_loader_version_range': neoforge_loader_version_range,
             'sources_url'                  : sources_url,
             'issues_url'                   : issues_url,
-            'credits'                      : credits,
+            // 'credits'                      : credits,
             'java_version'                 : java_version
     ]
 
