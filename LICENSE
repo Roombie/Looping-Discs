@@ -1,57 +1,12 @@
-LOOPING DISCS — ALL RIGHTS RESERVED
+## License
 
-Copyright © 2026 Roombie. All Rights Reserved.
+The source code is released under the [MIT License](LICENSE). Forks, ports, and
+derivative works are welcome — keep the copyright notice and credit **Roombie**
+as the original author.
 
-1. PERSONAL USE
+The name "Looping Discs" and the project artwork are not covered by the MIT
+license and remain All Rights Reserved. Please publish forks under a different
+name and with your own icon.
 
-Permission is granted to download and use official, unmodified builds of
-Looping Discs for personal use with compatible versions of Minecraft.
-
-2. MODPACK PERMISSION
-
-Permission is granted to include an official, unmodified build of Looping
-Discs in a modpack, provided that:
-
-- Roombie is clearly credited as the author;
-- the modpack includes a link to the original Looping Discs project page or
-  source repository;
-- the mod is not presented as the modpack creator's own work; and
-- access to the standalone mod is not sold or placed behind a separate fee.
-
-3. RESTRICTIONS
-
-Without prior written permission from Roombie, you may not:
-
-- reupload or redistribute the mod as a standalone download;
-- publish, distribute, or release modified versions, forks, ports, or
-  derivative works;
-- copy, reuse, or redistribute the source code, artwork, branding, or other
-  project assets;
-- sell, sublicense, rent, or otherwise commercially distribute the mod;
-- remove or alter copyright, attribution, or license notices; or
-- claim the mod, its source code, or its assets as your own work.
-
-4. SOURCE REPOSITORY
-
-Public availability of the source code does not grant permission to copy,
-modify, publish, distribute, sublicense, or create derivative works except as
-explicitly permitted in this license or authorized in writing by Roombie.
-Rights provided by the source-hosting platform itself remain unaffected.
-
-5. THIRD-PARTY MATERIAL
-
-Minecraft, Fabric, NeoForge, libraries, templates, and any other third-party
-components remain the property of their respective owners and are governed by
-their own licenses. This license applies only to original Looping Discs code
-and assets owned by Roombie.
-
-6. DISCLAIMER
-
-THE MOD IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY
-LAW, THE COPYRIGHT HOLDER SHALL NOT BE LIABLE FOR ANY CLAIM, DAMAGE, OR OTHER
-LIABILITY ARISING FROM THE USE OF OR INABILITY TO USE THE MOD.
-
-For permissions not granted above, contact Roombie through the official
-Looping Discs project page or repository.
+If you port this to a Minecraft version I no longer support, I'd rather it live
+on than disappear. A link back to this repository is appreciated.
